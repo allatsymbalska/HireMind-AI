@@ -1,0 +1,14 @@
+{
+  "ai_engineer": {
+    "title": "AI Engineer",
+    "description": "We are looking for an AI Engineer with experience designing and implementing AI solutions, especially with generative AI and LLM technologies. Your work includes building cloud-based ML platforms (Azure, AWS, GCP), designing MLOps/CI-CD pipelines, agent-based architectures, and developing human-AI collaboration. Required skills: Python, LLMs, Generative AI, cloud services, CI/CD, production deployment, AI/ML solution design."
+  },
+  "software_engineer_python": {
+    "title": "Software Engineer - Python",
+    "description": "Canonical is hiring a Software Engineer to develop, test, and release improvements to the Ubuntu Pro client. Required skills: Python, Linux systems, CI/CD, system administration, Debian packaging, cloud services, open-source contributions. The role involves collaborating with a distributed team, writing high-quality code and tests, debugging, and ensuring software interoperability across environments."
+  },
+  "software_dev_identity": {
+    "title": "Software Development Engineer II, Identity & Authentication",
+    "description": "Mapbox is hiring a Software Development Engineer for identity and access management, authentication, anti-fraud systems, and token security. Required skills: cloud services (AWS), distributed architecture, web services, React, Node.js, NoSQL, programming proficiency, testing practices, system scalability, and documentation. The role requires building secure, scalable solutions and collaborating across teams to deliver reliable IAM services."
+  }
+}
