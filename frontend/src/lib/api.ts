@@ -14,6 +14,16 @@ export interface CandidateResult {
   experience_rank: number;
   education_rank: number;
   final_score: number;
+  score_breakdown: {
+    skill_match: number;
+    semantic_similarity: number;
+    experience: number;
+    education: number;
+  };
+  missing_skills: string[];
+  extra_skills: string[];
+  explanation: string;
+  fit_label: string;
 }
 
 export async function fetchJobs(): Promise<Job[]> {
@@ -51,6 +61,16 @@ export async function scanResumes(
   const ranking = Array.isArray(data.ranking) ? data.ranking : [];
   return ranking.map((item: any) => ({
     filename: item.filename ?? "",
+    fit_label: item.fit_label ?? "Unknown",
+    explanation: item.explanation ?? "",
+    score_breakdown: item.score_breakdown || {
+      skill_match: 0,
+      semantic_similarity: 0,
+      experience: 0,
+      education: 0
+    },
+    missing_skills: Array.isArray(item.missing_skills) ? item.missing_skills : [],
+    extra_skills: Array.isArray(item.extra_skills) ? item.extra_skills : [],
     matched_skills: Array.isArray(item.matched_skills) ? item.matched_skills : [],
     skill_score: typeof item.skill_score === "number" ? item.skill_score : 0,
     semantic_similarity: typeof item.similarity_score === "number" ? item.similarity_score : 0,

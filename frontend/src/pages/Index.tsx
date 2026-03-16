@@ -5,6 +5,8 @@ import JobPositionsPanel from "@/components/JobPositionsPanel";
 import ResumeUploadArea from "@/components/ResumeUploadArea";
 import CandidateResultsTable from "@/components/CandidateResultsTable";
 import ExportButtons from "@/components/ExportButtons";
+import { DashboardAnalyticsPanel } from "@/components/DashboardAnalyticsPanel";
+import { EthicalAINotice } from "@/components/EthicalAINotice";
 
 interface UploadedFile {
   file: File;
@@ -110,6 +112,8 @@ const Index = () => {
         {selectedJob && (
           <>
             <div className="border-t border-border my-6" />
+            <EthicalAINotice />
+            {results.length > 0 && <DashboardAnalyticsPanel results={results} />}
             <CandidateResultsTable
               results={results}
               onReorder={setResults}

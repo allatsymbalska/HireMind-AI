@@ -95,6 +95,40 @@ async def scan_resumes(
             # minor
             (education / 5) * 0.05       
         )
+        
+        score_breakdown = {
+            "skill_match": skill_score * 0.65,
+            "semantic_similarity": similarity_score * 0.20,
+            "experience": (experience / 10) * 0.10,
+            "education": (education / 5) * 0.05
+        }
+        
+        missing_skills = list(set(job_skills) - set(matched_skills))
+        resume_all_skills = extract_job_skills(resume_text)
+        extra_skills = list(set(resume_all_skills) - set(job_skills))
+        
+        if final_score >= 0.8:
+            fit_label = "Strong Match"
+        elif final_score >= 0.6:
+            fit_label = "Good Fit"
+        elif final_score >= 0.4:
+            fit_label = "Potential Fit"
+        else:
+            fit_label = "Weak Match"
+            
+        explanation = f"Candidate scored {final_score:.2f} overall. Strongest match factors include "
+        if score_breakdown['skill_match'] > 0.4:
+            explanation += "excellent skill overlap. "
+        else:
+            explanation += f"moderate skill match (missing {len(missing_skills)} key skills). "
+            
+        if experience > 4:
+            explanation += "Candidate has solid experience. "
+        elif experience > 0:
+            explanation += "Candidate has some experience. "
+            
+        if education > 3:
+            explanation += "Education background is highly relevant."
 
         results.append({
             "filename": file.filename,
@@ -103,7 +137,12 @@ async def scan_resumes(
             "similarity_score": similarity_score,
             "experience": experience,
             "education_rank": education,
-            "final_score": final_score
+            "final_score": final_score,
+            "score_breakdown": score_breakdown,
+            "missing_skills": missing_skills,
+            "extra_skills": extra_skills,
+            "explanation": explanation.strip(),
+            "fit_label": fit_label
         })
 
     # sort candidates by final score descending

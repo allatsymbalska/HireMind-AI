@@ -156,25 +156,65 @@ const CandidateResultsTable = ({ results, onReorder }: Props) => {
                     </tr>
                     {expandedRow === idx && (
                       <tr key={`exp-${idx}`} className="bg-muted/20">
-                        <td colSpan={8} className="px-8 py-4">
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                        <td colSpan={8} className="px-8 py-4 space-y-4">
+                          <div className="flex flex-col gap-2 p-3 bg-muted rounded-md mb-4">
+                            <h4 className="font-semibold text-primary text-sm flex items-center justify-between">
+                              Candidate Explanation
+                              <span className="bg-primary/20 text-primary px-2 py-0.5 rounded text-xs">
+                                {r.fit_label || "Unknown Fit"}
+                              </span>
+                            </h4>
+                            <p className="text-sm text-foreground/80">{r.explanation}</p>
+                          </div>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm mt-4">
                             <div>
-                              <span className="text-muted-foreground">All Matched Skills:</span>
-                              <p className="font-medium mt-1">
-                                {Array.isArray(r.matched_skills) ? r.matched_skills.join(", ") : r.matched_skills}
-                              </p>
+                              <span className="text-muted-foreground block mb-2 font-semibold">Score Breakdown</span>
+                              <ul className="space-y-1 text-sm text-foreground/80 list-disc list-inside">
+                                <li>Skill Match: <span className="font-medium">{r.score_breakdown?.skill_match?.toFixed(3)}</span></li>
+                                <li>Similarity: <span className="font-medium">{r.score_breakdown?.semantic_similarity?.toFixed(3)}</span></li>
+                                <li>Experience: <span className="font-medium">{r.score_breakdown?.experience?.toFixed(3)}</span></li>
+                                <li>Education: <span className="font-medium">{r.score_breakdown?.education?.toFixed(3)}</span></li>
+                              </ul>
                             </div>
+                            
                             <div>
-                              <span className="text-muted-foreground">Experience Rank:</span>
-                              <p className="font-medium mt-1">{r.experience_rank}</p>
+                              <span className="text-muted-foreground block mb-2 font-semibold">Matched Skills</span>
+                              <div className="flex flex-wrap gap-1">
+                                {Array.isArray(r.matched_skills) && r.matched_skills.length > 0
+                                  ? r.matched_skills.map((s, i) => (
+                                      <span key={i} className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium">
+                                        {s}
+                                      </span>
+                                    ))
+                                  : <span className="text-sm text-muted-foreground">None</span>}
+                              </div>
                             </div>
+
                             <div>
-                              <span className="text-muted-foreground">Semantic Similarity:</span>
-                              <p className="font-medium mt-1">{r.semantic_similarity}</p>
+                              <span className="text-muted-foreground block mb-2 font-semibold">Missing Skills Gap</span>
+                              <div className="flex flex-wrap gap-1">
+                                {Array.isArray(r.missing_skills) && r.missing_skills.length > 0 
+                                  ? r.missing_skills.map((s, i) => (
+                                      <span key={i} className="px-2 py-0.5 rounded-full bg-destructive/10 text-destructive text-xs font-medium">
+                                        {s}
+                                      </span>
+                                    ))
+                                  : <span className="text-sm text-muted-foreground">No missing skills</span>}
+                              </div>
                             </div>
+                            
                             <div>
-                              <span className="text-muted-foreground">Final Score:</span>
-                              <p className="font-bold text-primary mt-1">{r.final_score}</p>
+                              <span className="text-muted-foreground block mb-2 font-semibold">Extra Skills (Resume)</span>
+                              <div className="flex flex-wrap gap-1">
+                                {Array.isArray(r.extra_skills) && r.extra_skills.length > 0 
+                                  ? r.extra_skills.slice(0, 10).map((s, i) => ( // show up to 10
+                                      <span key={i} className="px-2 py-0.5 rounded-full bg-secondary/20 text-secondary-foreground text-xs font-medium">
+                                        {s}
+                                      </span>
+                                    ))
+                                  : <span className="text-sm text-muted-foreground">No extra skills identified</span>}
+                              </div>
                             </div>
                           </div>
                         </td>
