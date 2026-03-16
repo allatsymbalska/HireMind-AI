@@ -59,7 +59,8 @@ async def scan_resumes(
         return {"error": "Invalid position_id"}
 
     job_description = JOBS[position_id]["description"]
-    job_skills = extract_job_skills(job_description)
+    raw_job_skills = JOBS[position_id].get("skills") or extract_job_skills(job_description)
+    job_skills = [s.lower().strip() for s in raw_job_skills]
 
     results = []
 
@@ -74,8 +75,9 @@ async def scan_resumes(
         resume_text = clean_text(resume_text)
 
         # NLP skill matching
-        matched_skills = match_resume_skills(resume_text, job_skills)
+        matched_skills = list(set([s.lower().strip() for s in match_resume_skills(resume_text, job_skills)]))
         skill_score = compute_skill_tfidf_score(job_description, resume_text, job_skills)
+        normalized_skill_score = min(skill_score * 5, 1.0)
 
         # semantic similarity from scorer.py (secondary)
         similarity_score = compute_similarity(job_description, resume_text)
@@ -86,49 +88,42 @@ async def scan_resumes(
 
         # final weighted score
         final_score = (
-            # main factor
-            skill_score * 0.65 +  
-            # secondary NLP factor      
-            similarity_score * 0.20 + 
-            # minor   
-            (experience / 10) * 0.10 +   
-            # minor
-            (education / 5) * 0.05       
+            normalized_skill_score * 0.45 +  
+            similarity_score * 0.30 + 
+            (experience / 10) * 0.15 +   
+            (education / 5) * 0.10       
         )
         
+        final_score = round(final_score * 100, 2)
+        
         score_breakdown = {
-            "skill_match": skill_score * 0.65,
-            "semantic_similarity": similarity_score * 0.20,
-            "experience": (experience / 10) * 0.10,
-            "education": (education / 5) * 0.05
+            "skill_match": round(normalized_skill_score * 100, 2),
+            "semantic_similarity": round(similarity_score * 100, 2),
+            "experience": experience,
+            "education": education
         }
         
-        missing_skills = list(set(job_skills) - set(matched_skills))
-        resume_all_skills = extract_job_skills(resume_text)
+        missing_skills = list(set(job_skills) - set(matched_skills))[:10]
+        resume_all_skills = [s.lower().strip() for s in extract_job_skills(resume_text)]
         extra_skills = list(set(resume_all_skills) - set(job_skills))
         
-        if final_score >= 0.8:
-            fit_label = "Strong Match"
-        elif final_score >= 0.6:
-            fit_label = "Good Fit"
-        elif final_score >= 0.4:
-            fit_label = "Potential Fit"
+        if final_score >= 75:
+            fit_label = "Strong Fit"
+        elif final_score >= 55:
+            fit_label = "Moderate Fit"
+        elif final_score >= 35:
+            fit_label = "Needs Review"
         else:
             fit_label = "Weak Match"
             
-        explanation = f"Candidate scored {final_score:.2f} overall. Strongest match factors include "
-        if score_breakdown['skill_match'] > 0.4:
-            explanation += "excellent skill overlap. "
+        if fit_label == "Strong Fit":
+            explanation = "Candidate demonstrates strong alignment with the role due to relevant AI and cloud skills, good semantic similarity to the job description, and solid professional experience."
+        elif fit_label == "Moderate Fit":
+            explanation = "Candidate shows partial alignment with the role. Several key skills are present, though some important technologies are missing."
+        elif fit_label == "Needs Review":
+            explanation = "Candidate has some relevant experience and skills but lacks several important technical requirements."
         else:
-            explanation += f"moderate skill match (missing {len(missing_skills)} key skills). "
-            
-        if experience > 4:
-            explanation += "Candidate has solid experience. "
-        elif experience > 0:
-            explanation += "Candidate has some experience. "
-            
-        if education > 3:
-            explanation += "Education background is highly relevant."
+            explanation = "Candidate shows limited alignment with the required technical skills and technologies."
 
         results.append({
             "filename": file.filename,
