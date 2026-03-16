@@ -13,13 +13,18 @@ This project was developed as an **Independent ML & Data Engineering demo applic
 # Key Features
 
 - Upload multiple PDF resumes
-- Extract and clean resume text
-- Automatically detect candidate skills
-- Match resume skills against job requirements
-- Calculate semantic similarity between resume and job description
+- Extract and clean resume text automatically
+- Detect and normalize candidate skills using NLP
+- Match resume skills against structured job skill requirements
+- Calculate TF-IDF skill relevance
+- Compute semantic similarity between resume and job description
 - Estimate candidate experience and education level
-- Rank candidates based on overall relevance
-- Display ranked results in an interactive dashboard
+- Generate a weighted candidate ranking score
+- Display score breakdown and candidate explanations
+- Identify missing skill gaps and extra skills
+- Label candidates with interpretable fit levels (Strong Fit, Moderate Fit, Needs Review, Weak Match)
+- Interactive recruiter dashboard with sortable results
+- Export ranked results as CSV or PDF
 
 ---
 
@@ -47,7 +52,6 @@ The original dashboard design is included in the repository:
 ```bash
 dashboard_design/dashboard_design.pdf
 ```
-
 ---
 
 ## Backend
@@ -91,8 +95,16 @@ The backend processes resumes through the following steps:
 8. **Education Ranking**  
    Identify education level from resume text.
 
-9. **Final Candidate Score**  
-   Combine all signals into a weighted ranking score.
+9. **Score Normalization and Ranking**  
+   Skill score, semantic similarity, experience, and education signals are normalized and combined into a weighted ranking score.
+
+10. **Explainable AI Output**  
+   The system generates:
+   - score breakdown
+   - matched skills
+   - missing skill gaps
+   - candidate fit labels
+   - human-readable explanations for recruiters.
 
 ---
 
@@ -114,11 +126,12 @@ The backend processes resumes through the following steps:
 
 ### NLP Techniques
 
-- Text preprocessing
-- Skill extraction
-- TF-IDF matching
-- Semantic similarity scoring
+- Text preprocessing and normalization
+- Skill extraction and matching
+- TF-IDF skill relevance scoring
+- Semantic similarity computation
 - Rule-based information extraction
+- Explainable scoring and candidate ranking
 
 ---
 
@@ -176,9 +189,11 @@ The dashboard allows the user to:
 - upload one or more PDF resumes
 - process resumes through the NLP pipeline
 - view ranked candidate results
-- export the results as **CSV** or **PDF**
+- inspect score breakdown and explanations
+- analyze matched skills and missing skill gaps
+- export the results as CSV or PDF
 
-![Dashboard Example](dashboard_design/dashboard.png)
+![Dashboard Example](dashboard_design/Dashboard.png)
 
 ---
 # Legal and Ethical Considerations
@@ -200,11 +215,12 @@ This project is a **demonstration prototype** and should not be used for real hi
 
 Potential improvements include:
 
-- Using transformer-based embeddings (Sentence-BERT) for deeper semantic similarity
-- Named Entity Recognition (NER) for better skill detection
-- Machine learning ranking models
-- Bias detection mechanisms
-- Improved resume parsing
+- Transformer-based embeddings (Sentence-BERT) for improved semantic similarity
+- Named Entity Recognition (NER) for advanced skill extraction
+- LLM-assisted resume explanations running locally
+- Bias detection and fairness auditing tools
+- Recruiter feedback loops to improve ranking accuracy
+- Support for multilingual resumes
 
 ---
 
