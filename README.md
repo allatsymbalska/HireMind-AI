@@ -52,6 +52,9 @@ The original dashboard design is included in the repository:
 ```bash
 dashboard_design/dashboard_design.pdf
 ```
+
+![Dashboard Example](dashboard_design/Dashboard_design.png)
+
 ---
 
 ## Backend
