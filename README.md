@@ -183,7 +183,16 @@ http://localhost:8080
 4. The system analyzes each resume using NLP
 5. Candidates are automatically ranked based on relevance
 
+## Test Data (Demo Resumes)
+
+The repository includes a folder:
+
+```bash
+"Test CVs for AI Engineer"
+```
+
 ---
+
 ## Example Output
 
 The dashboard allows the user to:
